@@ -1,0 +1,131 @@
+<div class="container-fluid">
+    <app-navbar></app-navbar>
+
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-between animate__animated animate__fadeIn">
+            <div class="col-12 col-md-5 border p-4">
+                <small>Documentos requeridos para los nuevos ingresos</small>
+                <hr>
+
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#nuevoDocumento">Agregar
+                        <fa-icon [icon]="faPlus"></fa-icon>
+                    </button>
+                </div>
+
+                <div class="table-responsive my-table-container">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Actualizar</th>
+                                <th scope="col">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let doc of documentos; let i = index">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{doc.nombreLargo}}</td>
+                                <td><button class="btn btn-sm"> <fa-icon [icon]="faPencil" data-bs-toggle="modal" data-bs-target="#actualizarDocumento" (click)="setDocumentoData(doc)"></fa-icon></button></td>
+                                <td><button class="btn btn-sm"><fa-icon [icon]="faTrash" (click)="eliminarDocumento(doc._id)"></fa-icon></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="alert alert-warning mt-3" role="alert" *ngIf="documentos.length === 0">
+                    Aún no hay documentos registrados
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 border p-4" id="admin-form">
+                <div>
+                    <small>Datos del administrador</small>
+                <hr>
+
+                <form [formGroup]="tempUserForm" (ngSubmit)="actualizarUsuario()">
+                <!-- <form [formGroup]="tempUserForm"> -->
+                    <div class="mb-3 row">
+                        <label for="usuario" class="col-sm-3 col-form-label"><small>Usuario:</small></label>
+                        <div class="col-sm-9">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="usuario" formControlName="username" [attr.disabled]="true">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="correo" class="col-sm-3 col-form-label"><small>Correo:</small></label>
+                        <div class="col-sm-9">
+                            <input autocomplete="off" type="email" class="form-control form-control-sm" id="correo" formControlName="correo">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="role" class="col-sm-3 col-form-label"><small>Role:</small></label>
+                        <div class="col-sm-9">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="role" formControlName="role" [attr.disabled]="true">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark" type="submit">Actualizar</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Nuevo Documento -->
+<div class="modal fade" id="nuevoDocumento" tabindex="-1" aria-labelledby="nuevoDocumentoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="nuevoDocumentoLabel">Nuevo Documento</h5>
+                <button #closeModal type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="nuevoDocuentoForm" (ngSubmit)="guardarDoc()">
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombre:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre"
+                                formControlName="nombreDoc">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Actualizar Documento -->
+<div class="modal fade" id="actualizarDocumento" tabindex="-1" aria-labelledby="actualizarDocumentoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="actualizarDocumentoLabel">Actualizar Documento</h5>
+                <button #closeUpdateModal type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="actualizarDocumentoForm" (ngSubmit)="actualizarDocumento()">
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombre:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre" formControlName="nombreLargo">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark" type="submit">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

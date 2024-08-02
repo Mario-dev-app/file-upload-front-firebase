@@ -1,0 +1,113 @@
+<div class="container-fluid">
+    <app-navbar></app-navbar>
+
+    <div class="container">
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-sm btn-dark" data-bs-toggle="modal" data-bs-target="#nuevoPerfil">Nuevo perfil <fa-icon [icon]="faPlus"></fa-icon></button>
+        </div>
+        <div class="alert alert-warning mt-3" role="alert" *ngIf="perfiles.length == 0">
+            No hay registros para mostrar
+        </div>
+        
+        <div class="card mt-3 overflow-auto" *ngFor="let perfil of perfiles">
+            <div class="card-body">
+                <h5 class="card-title">{{perfil.nombre}}
+                    <button (click)="setNombrePerfilToUpdate(perfil.nombre, perfil._id)" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#modificarPerfil"><i class="fa-solid fa-pencil"></i></button>
+                    <button (click)="eliminarPerfil(perfil._id)" class="btn btn-sm"><fa-icon [icon]="faTrash"></fa-icon></button>
+                </h5>
+                <div class="row">
+                    <input accept=".docx, .pdf" type="file" #inputFile hidden (change)="cargarArchivos($event)" multiple="multiple">
+                    <div class="col-12 col-md-6 mt-3" *ngFor="let subperfil of perfil.subperfiles">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title">{{subperfil.nombre}}</h5>
+                                    <button (click)="cargarRecurso(subperfil.nombre, perfil._id, subperfil.nombreArchivos)" class="btn btn-sm btn-dark">Agregar recurso <fa-icon [icon]="faPlus"></fa-icon></button>
+                                </div>
+                                <div class="alert alert-warning mt-3" role="alert" *ngIf="subperfil.nombreArchivos.length === 0">
+                                    No hay recursos cargados para mostrar
+                                </div>
+                                <div class="table-responsive" [ngStyle]="subperfil.nombreArchivos.length > 6 ? {'height': '300px'} : {}" *ngIf="subperfil.nombreArchivos.length !== 0">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Archivo</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let nombreArchivo of subperfil.nombreArchivos; let i = index">
+                                                <td>{{i+1}}</td>
+                                                <td>{{nombreArchivo}}</td>
+                                                <td>
+                                                    <button (click)="removerRecurso(subperfil.nombreArchivos, nombreArchivo, perfil._id, subperfil.nombre)" class="btn btn-sm rounded-circle"><fa-icon [icon]="faTrash"></fa-icon></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Nuevo Perfil -->
+<div class="modal fade" id="nuevoPerfil" tabindex="-1" aria-labelledby="nuevoDocumentoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="nuevoDocumentoLabel">Nuevo Perfil</h5>
+                <button #closeNuevoPerfilModal type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="nuevoPerfilForm" (ngSubmit)="crearPerfil()">
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombre:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre"
+                                formControlName="nombrePerfil">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Modificar Perfil -->
+<div class="modal fade" id="modificarPerfil" tabindex="-1" aria-labelledby="modificarPerfilLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="modificarPerfilLabel">Modificar Perfil</h5>
+                <button #closeModificarPerfilModal type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="modificarPerfilForm" (ngSubmit)="modificarPerfil()">
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombre:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre"
+                                formControlName="nombrePerfil">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark" type="submit">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

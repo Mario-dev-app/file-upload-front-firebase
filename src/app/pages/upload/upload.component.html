@@ -1,0 +1,29 @@
+<div class="container-fluid">
+
+  <app-navbar></app-navbar>
+
+  <div class="container mt-2">
+
+    <div class="alert alert-warning mt-3" role="alert" *ngIf="documentosPostulante.length === 0">
+      No le han asignado documentos para subir por el momento
+    </div>
+
+    <div class="row">
+      <div class="col-12 col-md-6" *ngFor="let doc of documentosPostulante">
+        <div class="mb-3 border p-3" *ngIf="doc.nombreArchivo.trim().length > 0">
+          <label for="formFile" class="form-label">{{doc.nombreDocumento | capitalizeMayus}}
+            <!-- <i class="fas fa-spinner fa-spin"></i> --></label>
+          <div class="alert alert-success" role="alert">
+            Archivo subido correctamente
+          </div>
+        </div>
+        <div class="mb-3 border pt-3 px-3 pb-5" *ngIf="doc.nombreArchivo.trim().length === 0">
+          <label for="formFile" class="form-label">{{doc.nombreDocumento | capitalizeMayus}}
+            <!-- <i class="fas fa-spinner fa-spin"></i> --></label>
+          <input accept=".docx, .pdf, .jpg, .jpeg" class="form-control" type="file" id="formFile"
+            (change)="uploadDoc($event, doc.nombreDocumento)">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

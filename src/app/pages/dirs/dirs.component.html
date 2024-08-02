@@ -1,0 +1,49 @@
+<div class="container-fluid">
+
+  <app-navbar></app-navbar>
+
+  <div class="container mt-4">
+
+    <div class="d-flex justify-content-between">
+      <div class="col-12 col-md-5">
+        <input (keyup)="searchSpecificDir($event)" type="text" class="form-control form-control-sm"
+          placeholder="Buscar carpeta...">
+      </div>
+    </div>
+
+
+    <div class="my-container table-responsive animate__animated animate__fadeIn" *ngIf="dirsName.length != 0">
+      <table class="table mt-3">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Carpetas</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let name of dirsName, let i = index" style="cursor: pointer;">
+            <td>{{i + 1}}</td>
+            <td>{{name}}</td>
+            <td>
+              <button class="btn btn-sm shadow rounded-circle"><fa-icon [icon]="faFolder" (click)="chargeFiles(name)"></fa-icon></button>
+            </td>
+            <td>
+              <div class="dropdown">
+                <button class="btn" data-bs-toggle="dropdown"><fa-icon [icon]="faEllipsisVertical"></fa-icon></button>
+                <ul class="dropdown-menu">
+                  <li><a href="#" class="dropdown-item" (click)="descargarCarpeta(name)">Descargar</a></li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-warning mt-3" role="alert" *ngIf="dirsName.length == 0">
+      No hay archivos para mostrar
+    </div>
+  </div>
+</div>

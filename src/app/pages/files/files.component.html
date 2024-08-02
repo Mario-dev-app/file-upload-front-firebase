@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <app-navbar></app-navbar>
+
+    <div class="container mt-4">
+
+      <div class="my-container table-responsive" *ngIf="files.length != 0">
+        <table class="table" >
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Archivos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let file of files, let i = index" style="cursor: pointer;" (click)="downloadFile(file)">
+                <td>{{i + 1}}</td>
+                <td>{{file}}</td>
+                <td>
+                  <button class="btn btn-sm shadow rounded-circle"><fa-icon [icon]="faFolder"></fa-icon></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+          <div class="alert alert-warning" role="alert" *ngIf="files.length == 0">
+            El postulante aún no sube ningún archivo
+          </div>
+
+          <button class="btn btn-sm btn-dark mt-3" [routerLink]="['/dirs']"> <fa-icon [icon]="faArrowLeft"></fa-icon> Regresar</button>
+    </div>
+</div>

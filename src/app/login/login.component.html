@@ -1,0 +1,63 @@
+<!-- <div class="d-flex align-items-center justify-content-center" style="width: 100vw; height: 100vh;">
+  <div class="col-10 col-md-4 col-lg-3 p-4 shadow animate__animated animate__backInDown">
+      <h4 class="text-center"><img src="../../assets/Logo MP 2.png" width="45" alt=""> Login</h4>
+      <hr>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="row">
+              <label for="usuario" class="col-4 col-form-label">Usuario:</label>
+              <div class="col-8">
+                  <input type="text" class="form-control" id="usuario" formControlName="username" autocomplete="off" autofocus>
+              </div>
+          </div>
+          <div class="row mt-3">
+              <label for="pass" class="col-4 col-form-label">Contraseña:</label>
+              <div class="col-8">
+                  <input type="password" class="form-control" id="pass" formControlName="password" autocomplete="off">
+              </div>
+          </div>
+          <div class="row mt-3">
+              <button class="btn btn-dark" type="submit">Ingresar</button>
+          </div>
+      </form>
+  </div>
+</div> -->
+
+<div class="row" style="width: 100vw; height: 100vh;">
+    <div class="col-9 animate__animated animate__fadeIn" id="foto-login">
+    </div>
+    <div class="col-12 col-md-3 d-flex flex-column align-items-center justify-content-center">
+        <div class="col-12 col-md-12 col-lg-12 p-4 animate__animated animate__backInDown">
+            <h4 class="text-center"><img src="../../assets/Logo MP 2.png" width="45" alt=""> Login</h4>
+            <hr>
+      
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <div class="row">
+                    <label for="usuario" class="col-4 col-form-label">Usuario:</label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="usuario" formControlName="username" autocomplete="off" autofocus>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <label for="pass" class="col-4 col-form-label">Contraseña:</label>
+                    <div class="col-8">
+                        <input [type]="this.loginForm.controls['showPassword'].value === true ? 'text' : 'password'" class="form-control" id="pass" formControlName="password" autocomplete="off">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col d-flex justify-content-center align-items-center mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" formControlName="showPassword" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              <small>Mostrar contraseña</small>
+                            </label>
+                          </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <button class="btn btn-dark" type="submit">Ingresar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

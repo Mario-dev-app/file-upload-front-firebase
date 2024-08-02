@@ -1,0 +1,15 @@
+.my-container{
+  height: 70vh;
+}
+
+
+.custom-tooltip {
+  --bs-tooltip-bg: var(--bd-violet-bg);
+  --bs-tooltip-color: var(--bs-white);
+}
+
+@media screen and (max-width: 769px) {
+  #group-buttons {
+      margin-top: 20px
+  }
+}

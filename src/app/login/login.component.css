@@ -1,0 +1,12 @@
+#foto-login {
+    background-image: url('../../assets/foto-login.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 769px) {
+    #foto-login {
+        display: none;
+    }
+}

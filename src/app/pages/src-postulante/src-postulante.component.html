@@ -1,0 +1,37 @@
+<div class="container-fluid">
+    <app-navbar></app-navbar>
+
+    <div class="container mt-3">
+
+      <div class="alert alert-warning mt-3" role="alert" *ngIf="srcPostulante.length === 0">
+        No hay recursos para mostrar
+      </div>
+
+        <div class="my-container table-responsive" *ngIf="srcPostulante.length != 0">
+            <table class="table" >
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Archivos</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let file of srcPostulante, let i = index" style="cursor: pointer;">
+                    <td>{{i + 1}}</td>
+                    <td>{{file}}</td>
+                    <td>
+                      <button class="btn btn-sm shadow rounded-circle" (click)="downloadFile(file)"><fa-icon [icon]="faFile"></fa-icon></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+
+        <!-- 
+        <div class="alert alert-warning" role="alert">
+            No hay recursos para el postulante.
+        </div> -->
+
+    </div>
+</div>

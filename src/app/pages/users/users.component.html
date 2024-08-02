@@ -1,0 +1,386 @@
+<div class="container-fluid">
+
+    <app-navbar></app-navbar>
+
+    <div class="container mt-3">
+
+        <div class="row d-flex justify-content-between">
+            <div class="col-12 col-md-5">
+                <input (keypress)="validateOnlyNumbers($event)" (keyup)="buscarPostulante($event)" type="text"
+                    class="form-control form-control-sm" placeholder="Buscar nuevo ingreso por DNI...">
+            </div>
+            <div class="col-12 col-md-7 d-flex justify-content-end" id="group-buttons">
+                <button (click)="descargarReporte()" class="btn btn-success btn-sm">Reporte de Excel <fa-icon [icon]="faFileExcel"></fa-icon></button>
+                <button class="btn btn-dark btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#nuevoPostulanteModal"
+                (click)="whenOpenModalToCreate()">Nuevo
+                <fa-icon [icon]="faPlus"></fa-icon></button>
+            </div>
+        </div>
+
+        <div class="my-container table-responsive animate__animated animate__fadeIn" *ngIf="postulantes.length !== 0">
+
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Puesto</th>
+                        <th>DNI</th>
+                        <th>Correo</th>
+                        <th>Acciones</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let postulante of postulantes; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{postulante.postulanteId.nombre}}</td>
+                        <td>{{postulante.postulanteId.apellidos}}</td>
+                        <td>{{postulante.postulanteId.puesto}}</td>
+                        <td>{{postulante.postulanteId.dni}}</td>
+                        <td>{{postulante.postulanteId.correo}}</td>
+                        <!-- <td>
+                          <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                      </td> -->
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal"
+                                    data-bs-target="#actualizarPostulanteModal" data-toggle="tooltip" title="Editar"
+                                    (click)="setDatosPostulante(postulante.postulanteId)"><fa-icon [icon]="faPen"></fa-icon></button>
+                                <button class="btn btn-sm btn-outline-dark"data-bs-toggle="modal" (click)="getAvance(postulante.postulanteId._id, postulante._id)"
+                                data-bs-target="#reporteAvanceModal" data-toggle="tooltip" title="Reporte de avance"><fa-icon [icon]="faListCheck"></fa-icon></button>
+                                <button class="btn btn-sm btn-outline-dark" data-toggle="tooltip" title="Reenviar correo" (click)="enviarCredenciales(postulante._id, postulante.postulanteId.dni)"><fa-icon [icon]="faEnvelope"></fa-icon></button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                    id="flexSwitchCheckDefault"
+                                    [attr.checked]="postulante.active === true ? 'checked' : null"
+                                    (change)="cambiarEstadoPostulante($event, postulante)">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="alert alert-warning mt-3" role="alert" *ngIf="postulantes.length == 0">
+            No hay registros para mostrar
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Nuevo postulante modal -->
+<div class="modal fade" id="nuevoPostulanteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel">Nuevo ingreso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="nuevoPostulanteForm" (ngSubmit)="crearNuevoPostulante()">
+                    <p>Datos del nuevo ingreso:</p>
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombres:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre"
+                                formControlName="nombre">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="apellidos" class="col-sm-2 col-form-label"><small>Apellidos:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="apellidos"
+                                formControlName="apellidos">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="puesto" class="col-sm-2 col-form-label"><small>Puesto:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="puesto"
+                                formControlName="puesto">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="dni" class="col-sm-2 col-form-label"><small>DNI:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="dni"
+                                formControlName="dni" (keypress)="validateOnlyNumbers($event)">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="dni" class="col-sm-2 col-form-label"><small>Correo:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="email" class="form-control form-control-sm" id="correo"
+                                formControlName="correo">
+                        </div>
+                    </div>
+                    <hr>
+                    <p>Documentos a solicitar:</p>
+                    <div class="row">
+                        <div class="col-6 mt-3" *ngFor="let doc of documentos">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" [id]="doc.nombreCorto"
+                                    [formControlName]="doc.nombreCorto">
+                                <label class="form-check-label" [for]="doc.nombreCorto">
+                                    <small>{{doc.nombreLargo}}</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <p>Recursos para el nuevo ingreso:</p>
+                        <div class="form-check">
+                            <input (change)="cambiarRecursoPersonalizado()" class="form-check-input" type="checkbox" [checked]="recursosPersonalizados" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              Personalizado
+                            </label>
+                          </div>
+                    </div>
+
+                    <div class="row" *ngIf="!recursosPersonalizados">
+                        <div class="col-4">
+                            <select class="form-select" formControlName="perfil">
+                                <option value="">Seleccionar perfil</option>
+                                <option [value]="perfil._id" *ngFor="let perfil of perfiles">{{perfil.nombre}}</option>
+                              </select>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-check">
+                                <input value="Planilla" class="form-check-input" type="radio" name="subperfil" id="flexRadioDefault1" formControlName="subperfil">
+                                <label class="form-check-label" for="flexRadioDefault1">
+                                  Planilla
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input value="Practicante" class="form-check-input" type="radio" name="subperfil" id="flexRadioDefault2" formControlName="subperfil">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                  Practicante
+                                </label>
+                              </div>
+                        </div>
+                    </div>
+
+                    <button *ngIf="recursosPersonalizados" type="button" class="btn btn-sm" (click)="abrirExplorador()">Agregar recursos <fa-icon [icon]="faPlus"></fa-icon></button>
+                    <input *ngIf="recursosPersonalizados" accept=".docx, .pdf" hidden #inputFile type="file" (change)="cargarArchivos($event)"
+                        multiple="multiple">
+
+                    <div *ngIf="recursosPersonalizados" class="row m-3">
+                        <div class="col-12 alert alert-success" *ngIf="recursosToUpload.length === 0">
+                            No ha cargado ningún recurso
+                        </div>
+                        <div class="col-12 alert alert-success" *ngIf="recursosToUpload.length > 0">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    *ngFor="let file of recursosToUpload; let i = index">
+                                    {{file.name}}
+                                    <fa-icon [icon]="faXmark" style="cursor: pointer;" (click)="removerArchivo(i)"></fa-icon>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button #closeModal type="button" class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-dark btn-sm" style="margin-left: 10px;">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Actualizar postulante modal -->
+<div class="modal fade" id="actualizarPostulanteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel">Actualizar nuevo ingreso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="actualizarPostulanteForm" (ngSubmit)="actualizarPostulante()">
+                    <p>Datos del nuevo ingreso:</p>
+                    <div class="mb-3 row">
+                        <label for="nombre" class="col-sm-2 col-form-label"><small>Nombres:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="nombre"
+                                formControlName="nombre">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="apellidos" class="col-sm-2 col-form-label"><small>Apellidos:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="apellidos"
+                                formControlName="apellidos">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="puesto" class="col-sm-2 col-form-label"><small>Puesto:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="puesto"
+                                formControlName="puesto">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="dni" class="col-sm-2 col-form-label"><small>DNI:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="dni"
+                                formControlName="dni" (keypress)="validateOnlyNumbers($event)">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="dni" class="col-sm-2 col-form-label"><small>Correo:</small></label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="email" class="form-control form-control-sm" id="correo"
+                                formControlName="correo">
+                        </div>
+                    </div>
+                    <hr>
+                    <p>Documentos a solicitar:</p>
+                    <div class="row">
+                        <div class="col-6 mt-3" *ngFor="let doc of todosLosDocumentos">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" [id]="doc.nombreCorto"
+                                    [formControlName]="doc.nombreCorto">
+                                <label class="form-check-label" [for]="doc.nombreCorto">
+                                    <small>{{doc.nombreLargo}}</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <button type="button" class="btn btn-sm" (click)="abrirExploradorToUpdate()">Agregar recursos <fa-icon [icon]="faPlus"></fa-icon></button>
+                    <input accept=".docx, .pdf" hidden #inputFileToUpdate type="file"
+                        (change)="cargarArchivosToUpdate($event)" multiple="multiple">
+
+                    <div class="row m-3">
+                        <div class="col-12 alert alert-success" *ngIf="recursosToUpload.length === 0">
+                            No ha cargado ningún recurso
+                        </div>
+                        <div class="col-12 alert alert-success" *ngIf="recursosToUpload.length > 0">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    *ngFor="let file of recursosToUpload; let i = index">
+                                    {{file}}
+                                    <fa-icon [icon]="faXmark" style="cursor: pointer;"
+                                    (click)="removerArchivoToUpload(i)"></fa-icon>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button #closeModalUpdate type="button" class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-dark btn-sm" style="margin-left: 10px;">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Ver reporte de avance modal -->
+<div class="modal fade" id="reporteAvanceModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel">Reporte de avance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Documento</th>
+                                <th class="text-center">Estado</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let documento of avanceDocumentos; let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{documento.nombreDocumento | capitalizeMayus}}</td>
+                                <td class="text-center">
+                                    <span *ngIf="documento.nombreArchivo.length !== 0" class="text-success"><fa-icon [icon]="faCheck"></fa-icon></span>
+                                    <span *ngIf="documento.nombreArchivo.length === 0" class="text-danger"><fa-icon [icon]="faX"></fa-icon></span>
+                                </td>
+                                <td>
+                                    <button (click)="habilitarReenvio(documento.nombreDocumento)" [disabled]="documento.nombreArchivo.length === 0" class="btn btn-sm btn-outline-dark">Habilitar reenvío</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-dark" (click)="enviarRecordatorio()">Recordatorio <fa-icon [icon]="faEnvelope"></fa-icon></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Actualizar postulante modal -->
+<!-- <div class="modal fade" id="actualizarPostulanteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="exampleModalLabel">Actualizar postulante</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="actualizarPostulanteForm" (ngSubmit)="actualizarPostulante()">
+                    <div class="mb-3 row">
+                        <label for="name" class="col-sm-2 col-form-label">Nombres:</label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="name"
+                                formControlName="nombre">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="lastname" class="col-sm-2 col-form-label">Apellidos:</label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="lastname"
+                                formControlName="apellidos">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="dni" class="col-sm-2 col-form-label">DNI:</label>
+                        <div class="col-sm-10">
+                            <input autocomplete="off" type="text" class="form-control form-control-sm" id="dni"
+                                formControlName="dni" (keypress)="validateDNIFormat($event)">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button #closeModal2 type="button" class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-dark btn-sm" style="margin-left: 10px;">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
